@@ -30,28 +30,24 @@ const movieSchema = new mongoose.Schema({
     required: [true, "Rating is required"] 
   },
 });
-// Add a virtual property to calculate the age of the movie
+
 movieSchema.virtual('movie_age').get(function() {
   const releaseYear = parseInt(this.release_date.split('-')[0]);
   const currentYear = new Date().getFullYear();
   return currentYear - releaseYear;
 });
 
-// Add a method to get a summary of the movie
 movieSchema.methods.getMovieSummary = function() {
   return `${this.name} directed by ${this.director_name} was released in ${this.release_date} and has a rating of ${this.rating}.`;
 };
 
-// Add a static method to find movies by director
-movieSchema.statics.findByDirector = function(directorName) {
+movieSchema.statics.findByDirectorName = function(directorName) {
   return this.find({ director_name: directorName });
 };
 
-// Add a pre-save hook to log when a movie is saved
 movieSchema.pre('save', function() {
   console.log(`Saving movie: ${this.name}`);
 });
 
-// Create the Movie model
 const Movie = mongoose.model('Movie', movieSchema);
 export default Movie;
